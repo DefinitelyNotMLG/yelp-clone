@@ -1,6 +1,7 @@
 //dependancies
 require("dotenv").config();
 const express = require("express");
+const db = require("./db");
 const app = express();
 const morgan = require('morgan');
 
@@ -34,25 +35,40 @@ app.put("/api/v1/restaurants/:id", (req, res) => {
 });
 
 
-//grab all restaurants
-app.get("/api/v1/restaurants", (req, res) => {
+//get all restaurants
+app.get("/api/v1/restaurants", async (req, res) => {
+
+    try {
+    const results = await db.query("select * from restaurant");
+    console.log(results);
     res.status(200).json({
         status: "success",
+        results: results.rows.length,
         data: {
-            restaurant: ["macdonalds", "wendys"],
+            restaurant: results.rows,
         },
     });
+} catch (err) {
+    console.log(err);
+};
 });
 
-//grab a single restaurant
-app.get("/api/v1/restaurants/:id", (req, res) => {
+//get a single restaurant
+app.get("/api/v1/restaurants/:id", async (req, res) => {
     console.log(req.params);
-    res.status(200).json({
+    
+    try {
+        const results = await db.query(`select * from restaurant where id = ${req.params.id}`);
+        res.status(200).json({
         status: "success",
         data: {
-            restaurant: ["macdonalds", "wendys"],
+            restaurant: results.rows[0],
         },
     });
+    console.log(results.rows[0]);
+} catch (err) {
+    console.log(err);
+};
 });
 
 //delete restaurant
