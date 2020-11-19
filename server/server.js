@@ -4,10 +4,12 @@ const express = require("express");
 const db = require("./db");
 const app = express();
 const morgan = require('morgan');
+const cors =require("cors")
 
 //logger
 app.use(morgan('dev'))
-
+//cors
+app.use(cors());
 //middleware
 app.use(express.json())
 
